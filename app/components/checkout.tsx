@@ -80,7 +80,7 @@ export default function Checkout({ productId, onSuccess }: { productId: string; 
         <div className="text-center p-8 bg-green-50 rounded-lg border-2 border-green-200">
           <div className="text-6xl mb-4">✅</div>
           <h2 className="text-2xl font-bold text-green-800 mb-2">Payment Successful!</h2>
-          <p className="text-green-700 mb-4">You now have unlimited lifetime access to the AI Resume Customizer.</p>
+          <p className="text-green-700 mb-4">You now have unlimited lifetime access to the ResumeAlign.</p>
           <p className="text-sm text-gray-600 mb-4">
             We've saved your access to: <strong>{email}</strong>
           </p>

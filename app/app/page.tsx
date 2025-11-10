@@ -65,7 +65,7 @@ export default function ResumeCustomizer() {
         setRemainingFree(data.remaining)
       }
     } catch (error) {
-      console.error("[v0] Failed to check rate limit:", error)
+      console.error("Failed to check rate limit:", error)
     }
   }
 
@@ -89,8 +89,8 @@ export default function ResumeCustomizer() {
 
       pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`
 
-      console.log("[v0] PDF.js version:", pdfjsLib.version)
-      console.log("[v0] Worker URL:", pdfjsLib.GlobalWorkerOptions.workerSrc)
+      console.log("PDF.js version:", pdfjsLib.version)
+      console.log("Worker URL:", pdfjsLib.GlobalWorkerOptions.workerSrc)
 
       const arrayBuffer = await file.arrayBuffer()
 
@@ -110,7 +110,7 @@ export default function ResumeCustomizer() {
         .replace(/\n\s*\n/g, "\n")
         .trim()
 
-      console.log("[v0] Extracted text length:", cleanedText.length)
+      console.log("Extracted text length:", cleanedText.length)
 
       setUploadedCV(cleanedText)
 
@@ -123,7 +123,7 @@ export default function ResumeCustomizer() {
         description: `Extracted ${cleanedText.length} characters from your PDF`,
       })
     } catch (error) {
-      console.error("[v0] Error parsing PDF:", error)
+      console.error("Error parsing PDF:", error)
       toast({
         title: "Error parsing PDF",
         description:
@@ -635,7 +635,7 @@ export default function ResumeCustomizer() {
 
         <div className="mb-6 sm:mb-8 md:mb-10 text-center">
           <h1 className="mb-2 sm:mb-3 text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent text-balance">
-            AI Resume Customizer
+            ResumeAlign
           </h1>
           <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-2xl mx-auto text-pretty px-4">
             Upload your resume and job details to generate a tailored CV and application email powered by AI

@@ -383,7 +383,7 @@ export async function POST(req: Request) {
       return Response.json({ error: "Resume data too large. Maximum size is 50KB" }, { status: 413 })
     }
 
-    console.log("[v0] Starting AI-powered PDF resume generation")
+    console.log("Starting AI-powered PDF resume generation")
 
     try {
       const prompt = `You are an expert resume formatter. Transform this resume text into a CLEAN, PROFESSIONAL HTML document using the EXACT CSS and HTML structure provided.
@@ -495,10 +495,10 @@ OUTPUT ONLY PURE HTML - NO TEXT BEFORE OR AFTER!`
       }
 
       const cleanedHtml = cleanHtmlOutput(text)
-      console.log("[v0] AI PDF resume generation complete")
+      console.log("AI PDF resume generation complete")
       return Response.json({ htmlResume: cleanedHtml })
     } catch (aiError: any) {
-      console.log(`[v0] AI generation failed, falling back to template`)
+      console.log(`AI generation failed, falling back to template`)
 
       if (ENABLE_FREE_TIER_LIMITS && !hasUnlimitedAccess) {
         const identifier = getClientIdentifier(req)

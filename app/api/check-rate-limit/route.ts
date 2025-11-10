@@ -30,7 +30,7 @@ export async function POST(req: Request) {
       unlimited: false,
     })
   } catch (error) {
-    console.error("[v0] Rate limit check error:", error)
+    console.error("Rate limit check error:", error)
     return Response.json({ error: "Failed to check rate limit" }, { status: 500 })
   }
 }
