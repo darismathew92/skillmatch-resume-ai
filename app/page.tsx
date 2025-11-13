@@ -84,9 +84,7 @@ export default function HomePage() {
       {/* Benefits Section */}
       <div className="container mx-auto px-4 py-16 bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl my-16">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900">
-            Why Use ResumeAlign?
-          </h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900">Why Use ResumeAlign?</h2>
           <div className="grid md:grid-cols-2 gap-6">
             <div className="flex gap-4">
               <div className="flex-shrink-0">
@@ -136,6 +134,34 @@ export default function HomePage() {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Contact Section */}
+      <div className="container mx-auto px-4 py-16">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">Get in Touch</h2>
+          <p className="text-lg text-gray-600 mb-8">Have questions or feedback? We'd love to hear from you!</p>
+          <a
+            href="mailto:darismathew92@gmail.com?subject=ResumeAlign Inquiry"
+            className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all hover:scale-105 shadow-lg"
+          >
+            <svg
+              className="w-5 h-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              />
+            </svg>
+            Contact Us
+          </a>
         </div>
       </div>
 
