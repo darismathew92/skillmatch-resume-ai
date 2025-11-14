@@ -166,6 +166,60 @@ export default function HomePage() {
         </div>
       </div>
 
+      {/* Blog Section */}
+      <div className="container mx-auto px-4 py-16 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">Resume Tips & Job Hunting Resources</h2>
+            <p className="text-lg text-gray-600">Expert advice to help you land your dream job</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 mb-8">
+            <a 
+              href="/blog/ats-optimization-guide"
+              className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl hover:shadow-lg transition-all border-2 border-blue-200 hover:border-blue-300"
+            >
+              <div className="text-3xl mb-4">📊</div>
+              <h3 className="font-bold text-lg mb-3 text-gray-900">ATS Optimization Guide</h3>
+              <p className="text-gray-600 text-sm mb-4">Learn how to make your resume pass Applicant Tracking Systems</p>
+              <span className="text-blue-600 font-medium text-sm">Read more →</span>
+            </a>
+
+            <a 
+              href="/blog/resume-keywords"
+              className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl hover:shadow-lg transition-all border-2 border-purple-200 hover:border-purple-300"
+            >
+              <div className="text-3xl mb-4">🔑</div>
+              <h3 className="font-bold text-lg mb-3 text-gray-900">Resume Keywords Guide</h3>
+              <p className="text-gray-600 text-sm mb-4">Master keyword optimization without stuffing</p>
+              <span className="text-purple-600 font-medium text-sm">Read more →</span>
+            </a>
+
+            <a 
+              href="/blog/tailoring-resume-tips"
+              className="bg-gradient-to-br from-pink-50 to-pink-100 p-6 rounded-xl hover:shadow-lg transition-all border-2 border-pink-200 hover:border-pink-300"
+            >
+              <div className="text-3xl mb-4">⚡</div>
+              <h3 className="font-bold text-lg mb-3 text-gray-900">Quick Tailoring Tips</h3>
+              <p className="text-gray-600 text-sm mb-4">Customize any resume in under 10 minutes</p>
+              <span className="text-pink-600 font-medium text-sm">Read more →</span>
+            </a>
+          </div>
+
+          <div className="text-center">
+            <a
+              href="/blog"
+              className="inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all hover:scale-105"
+            >
+              View All Articles
+              <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
       {/* CTA Section */}
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-3xl mx-auto text-center bg-gradient-to-r from-blue-600 to-purple-600 p-12 rounded-2xl shadow-2xl">
