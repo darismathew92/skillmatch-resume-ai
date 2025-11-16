@@ -772,22 +772,25 @@ export default function ResumeCustomizer() {
                   />
                 </div>
                 <div className="space-y-1.5 sm:space-y-2">
-                  <Label htmlFor="customInstructions" className="text-sm font-medium">
-                    Additional Instructions (Optional)
-                    <span className="text-xs text-gray-500 font-normal ml-2">
-                      Guide the AI with specific requirements
+                  <Label htmlFor="customInstructions" className="text-sm font-medium flex items-center gap-2">
+                    <span>Additional Instructions (Optional)</span>
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-100 text-amber-800 text-xs rounded-full font-medium">
+                      ✨ AI Guide
                     </span>
                   </Label>
                   <Textarea
                     id="customInstructions"
-                    placeholder="Example: Keep information concise. Emphasize leadership experience. Include my project on machine learning from 2023..."
-                    className="min-h-24 sm:min-h-28 text-base sm:text-sm bg-amber-50/50 border-amber-200 focus:border-amber-400"
+                    placeholder="Examples:\n• Keep resume under one page\n• Emphasize leadership and team management experience\n• Include my machine learning project from 2023\n• Focus on quantifiable achievements\n• Use action verbs and metrics"
+                    className="min-h-28 sm:min-h-32 text-base sm:text-sm bg-amber-50/50 border-amber-200 focus:border-amber-400 focus:ring-amber-400"
                     value={customInstructions}
                     onChange={(e) => setCustomInstructions(e.target.value)}
                   />
-                  <p className="text-xs text-gray-500 mt-1">
-                    💡 Tell the AI what to emphasize, include, or keep brief in your resume
-                  </p>
+                  <div className="flex items-start gap-2 p-2 bg-amber-50 rounded border border-amber-200">
+                    <span className="text-amber-600 text-sm">💡</span>
+                    <p className="text-xs text-amber-800 leading-relaxed">
+                      <strong>Pro tip:</strong> Be specific! Tell the AI what to highlight, what to keep brief, or what details to include. These instructions apply to your resume, email, and PDF.
+                    </p>
+                  </div>
                 </div>
                 <div className="grid grid-cols-1 gap-3 pt-3 sm:pt-4">
                   <Button
@@ -948,7 +951,7 @@ export default function ResumeCustomizer() {
                       </div>
                     ) : (
                       <div className="flex flex-col items-center justify-center h-80 sm:h-96 text-center space-y-6 px-4">
-                        <div className="p-6 rounded-full bg-gradient-to-br from-blue-100 to-purple-100">
+                        <div className="p-6 rounded-full bg-gradient-to-br from-purple-100 to-pink-100">
                           <span className="text-5xl">📄</span>
                         </div>
                         <div>
