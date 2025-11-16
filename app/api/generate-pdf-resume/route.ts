@@ -203,7 +203,7 @@ const FIXED_CSS_TEMPLATE = `
 `
 
 function cleanHtmlOutput(text: string): string {
-  let cleaned = text.replace(/```html\s*/gi, "").replace(/```\s*/g, "")
+  let cleaned = text.replace(/\`\`\`html\s*/gi, "").replace(/\`\`\`\s*/g, "")
   cleaned = cleaned.trim()
 
   if (!cleaned.toLowerCase().startsWith("<!doctype")) {
@@ -354,7 +354,7 @@ function escapeHtml(text: string): string {
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { customizedResume, jobDetails, hasUnlimitedAccess } = body
+    const { customizedResume, jobDetails, customInstructions, hasUnlimitedAccess } = body
 
     if (ENABLE_FREE_TIER_LIMITS && !hasUnlimitedAccess) {
       cleanupOldEntries()
@@ -386,13 +386,17 @@ export async function POST(req: Request) {
     console.log("Starting AI-powered PDF resume generation")
 
     try {
+      const additionalInstructionsText = customInstructions 
+        ? `\n\n**USER FORMATTING PREFERENCES:**\n${customInstructions}\n\nApply these preferences to the HTML output while maintaining the required CSS structure.`
+        : ''
+
       const prompt = `You are an expert resume formatter. Transform this resume text into a CLEAN, PROFESSIONAL HTML document using the EXACT CSS and HTML structure provided.
 
 Customized Resume Text:
 ${resumeText}
 
 Job Title: ${jobDetails.title}
-Company: ${jobDetails.company || "Not specified"}
+Company: ${jobDetails.company || "Not specified"}${additionalInstructionsText}
 
 **YOU MUST USE THIS EXACT CSS (DO NOT MODIFY):**
 ${FIXED_CSS_TEMPLATE}

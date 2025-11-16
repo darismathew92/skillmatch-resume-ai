@@ -10,7 +10,7 @@ const MAX_JOB_DESC_SIZE = 10000
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { cvData, jobDetails, hasUnlimitedAccess } = body
+    const { cvData, jobDetails, customInstructions, hasUnlimitedAccess } = body
 
     if (ENABLE_FREE_TIER_LIMITS && !hasUnlimitedAccess) {
       cleanupOldEntries()
@@ -48,13 +48,17 @@ export async function POST(req: Request) {
     const cvText = cvDataStr
     const jobText = `Job Title: ${jobDetails.title}\nCompany: ${jobDetails.company || "Not specified"}\nDescription: ${jobDetails.description}\nRequirements: ${jobDetails.requirements || "Not specified"}`
 
+    const additionalInstructionsText = customInstructions 
+      ? `\n\n**SPECIAL USER INSTRUCTIONS:**\n${customInstructions}\n\nIncorporate these user preferences into the email while maintaining professionalism.`
+      : ''
+
     const prompt = `You are an expert career consultant and professional email writer. Your task is to write a compelling job application email.
 
 Given the following candidate information:
 ${cvText}
 
 And the following job details:
-${jobText}
+${jobText}${additionalInstructionsText}
 
 Please write a professional, engaging job application email that:
 1. Has a clear, professional subject line

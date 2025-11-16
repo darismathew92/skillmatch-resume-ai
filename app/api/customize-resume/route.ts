@@ -10,7 +10,7 @@ const MAX_JOB_DESC_SIZE = 10000
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { cvData, jobDetails, hasUnlimitedAccess } = body
+    const { cvData, jobDetails, customInstructions, hasUnlimitedAccess } = body
 
     if (ENABLE_FREE_TIER_LIMITS && !hasUnlimitedAccess) {
       cleanupOldEntries()
@@ -47,6 +47,10 @@ export async function POST(req: Request) {
 
     const cvText = cvDataStr
     const jobText = `Job Title: ${jobDetails.title}\nCompany: ${jobDetails.company || "Not specified"}\nDescription: ${jobDetails.description}\nRequirements: ${jobDetails.requirements || "Not specified"}`
+    
+    const additionalInstructionsText = customInstructions 
+      ? `\n\n**SPECIAL USER INSTRUCTIONS (HIGHEST PRIORITY):**\n${customInstructions}\n\nYou MUST follow these user-specific requirements carefully while maintaining professionalism.`
+      : ''
 
     const prompt = `You are an expert resume writer and career consultant. Your task is to customize a resume for a specific job application with DEEP, STRATEGIC customization.
 
@@ -54,7 +58,7 @@ Given the following CV data:
 ${cvText}
 
 And the following job details:
-${jobText}
+${jobText}${additionalInstructionsText}
 
 Please create a highly tailored, professional resume that demonstrates EXCEPTIONAL alignment with this role by:
 

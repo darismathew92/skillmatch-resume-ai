@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter } from 'next/navigation'
 import Script from "next/script"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -29,6 +29,7 @@ export default function ResumeCustomizer() {
     description: "",
     requirements: "",
   })
+  const [customInstructions, setCustomInstructions] = useState<string>("")
   const [customizedResume, setCustomizedResume] = useState<string>("")
   const [generatedEmail, setGeneratedEmail] = useState<string>("")
   const [htmlResume, setHtmlResume] = useState<string>("")
@@ -179,6 +180,7 @@ export default function ResumeCustomizer() {
         body: JSON.stringify({
           cvData: uploadedCV,
           jobDetails,
+          customInstructions: customInstructions.trim(),
           hasUnlimitedAccess: isPro,
         }),
       })
@@ -291,6 +293,7 @@ export default function ResumeCustomizer() {
         body: JSON.stringify({
           cvData: uploadedCV,
           jobDetails,
+          customInstructions: customInstructions.trim(),
           hasUnlimitedAccess: isPro,
         }),
       })
@@ -471,6 +474,7 @@ export default function ResumeCustomizer() {
         body: JSON.stringify({
           customizedResume: customizedResume,
           jobDetails,
+          customInstructions: customInstructions.trim(),
           hasUnlimitedAccess: isPro,
         }),
       })
@@ -766,6 +770,24 @@ export default function ResumeCustomizer() {
                     value={jobDetails.requirements}
                     onChange={(e) => setJobDetails({ ...jobDetails, requirements: e.target.value })}
                   />
+                </div>
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label htmlFor="customInstructions" className="text-sm font-medium">
+                    Additional Instructions (Optional)
+                    <span className="text-xs text-gray-500 font-normal ml-2">
+                      Guide the AI with specific requirements
+                    </span>
+                  </Label>
+                  <Textarea
+                    id="customInstructions"
+                    placeholder="Example: Keep information concise. Emphasize leadership experience. Include my project on machine learning from 2023..."
+                    className="min-h-24 sm:min-h-28 text-base sm:text-sm bg-amber-50/50 border-amber-200 focus:border-amber-400"
+                    value={customInstructions}
+                    onChange={(e) => setCustomInstructions(e.target.value)}
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    💡 Tell the AI what to emphasize, include, or keep brief in your resume
+                  </p>
                 </div>
                 <div className="grid grid-cols-1 gap-3 pt-3 sm:pt-4">
                   <Button
