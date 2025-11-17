@@ -23,6 +23,7 @@ export default function ResumeCustomizer() {
   const [isPro, setIsPro] = useState(false)
   const [uploadedCV, setUploadedCV] = useState<string>("")
   const [isParsing, setIsParsing] = useState(false)
+  const [hasSavedCV, setHasSavedCV] = useState(false)
   const [jobDetails, setJobDetails] = useState({
     title: "",
     company: "",
@@ -44,6 +45,26 @@ export default function ResumeCustomizer() {
 
     if (!pro && ENABLE_FREE_TIER_LIMITS) {
       checkServerRateLimit()
+    }
+
+    const savedCV = localStorage.getItem("savedCV")
+    if (savedCV) {
+      setUploadedCV(savedCV)
+      setHasSavedCV(true)
+      toast({
+        title: "Resume loaded!",
+        description: "Your previously saved resume has been loaded",
+      })
+    }
+
+    const savedCustomizedResume = localStorage.getItem("customizedResume")
+    if (savedCustomizedResume) {
+      setCustomizedResume(savedCustomizedResume)
+    }
+
+    const savedEmail = localStorage.getItem("generatedEmail")
+    if (savedEmail) {
+      setGeneratedEmail(savedEmail)
     }
   }, [router])
 
@@ -114,14 +135,15 @@ export default function ResumeCustomizer() {
       console.log("Extracted text length:", cleanedText.length)
 
       setUploadedCV(cleanedText)
+      setHasSavedCV(true)
 
-      localStorage.setItem("uploadedCV", cleanedText)
+      localStorage.setItem("savedCV", cleanedText)
 
       analytics.trackCVUpload(file.size)
 
       toast({
-        title: "CV uploaded successfully",
-        description: `Extracted ${cleanedText.length} characters from your PDF`,
+        title: "CV uploaded & saved!",
+        description: `Your resume has been saved for future use (${cleanedText.length} characters)`,
       })
     } catch (error) {
       console.error("Error parsing PDF:", error)
@@ -134,6 +156,16 @@ export default function ResumeCustomizer() {
     } finally {
       setIsParsing(false)
     }
+  }
+
+  const handleClearSavedCV = () => {
+    localStorage.removeItem("savedCV")
+    setUploadedCV("")
+    setHasSavedCV(false)
+    toast({
+      title: "Resume cleared",
+      description: "Your saved resume has been removed",
+    })
   }
 
   const handleGenerateResume = async () => {
@@ -720,10 +752,30 @@ export default function ResumeCustomizer() {
                     </label>
                   </div>
                   {uploadedCV && (
-                    <div className="p-3 sm:p-4 bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-lg">
-                      <p className="text-sm sm:text-base text-blue-800 font-medium leading-relaxed">
-                        ✓ CV uploaded successfully ({uploadedCV.length} characters extracted)
-                      </p>
+                    <div className="space-y-3">
+                      <div className="p-3 sm:p-4 bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-lg">
+                        <div className="flex items-start justify-between gap-3">
+                          <p className="text-sm sm:text-base text-blue-800 font-medium leading-relaxed">
+                            ✓ CV {hasSavedCV ? 'loaded' : 'uploaded'} successfully ({uploadedCV.length} characters)
+                          </p>
+                          <Button
+                            onClick={handleClearSavedCV}
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 px-3 text-xs text-red-600 hover:text-red-700 hover:bg-red-50 flex-shrink-0"
+                          >
+                            Clear
+                          </Button>
+                        </div>
+                      </div>
+                      {hasSavedCV && (
+                        <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                          <p className="text-sm text-green-800 leading-relaxed flex items-center gap-2">
+                            <span className="text-base">💾</span>
+                            <span>Your resume is saved! Just add job details to generate new applications.</span>
+                          </p>
+                        </div>
+                      )}
                     </div>
                   )}
                   {!uploadedCV && !isParsing && (
