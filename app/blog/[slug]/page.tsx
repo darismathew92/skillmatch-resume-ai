@@ -70,7 +70,7 @@ const blogContent: Record<string, any> = {
       <p>Use standard headings like "Work Experience," "Education," and "Skills" instead of creative alternatives like "My Journey" or "Where I've Been."</p>
 
       <div class="callout">
-        <p><strong>Pro Tip:</strong> ResumeAlign automatically formats your resume to be ATS-friendly while maintaining professional aesthetics.</p>
+        <p><strong>Pro Tip:</strong> Skillmatchresume automatically formats your resume to be ATS-friendly while maintaining professional aesthetics.</p>
       </div>
 
       <h2>How to Optimize Your Resume for ATS</h2>
@@ -96,7 +96,7 @@ const blogContent: Record<string, any> = {
       <h2>Testing Your Resume</h2>
       <p>Before submitting, copy your resume text and paste it into a plain text editor. If it looks jumbled or missing information, the ATS probably can't read it properly either.</p>
 
-      <p class="highlight">The good news? With tools like ResumeAlign, you can generate ATS-optimized resumes tailored to each job in minutes, not hours.</p>
+      <p class="highlight">The good news? With tools like Skillmatchresume, you can generate ATS-optimized resumes tailored to each job in minutes, not hours.</p>
     `,
   },
   "resume-keywords": {
@@ -136,7 +136,7 @@ const blogContent: Record<string, any> = {
       <p>Look at profiles of people in similar roles to see what keywords they emphasize.</p>
 
       <div class="callout">
-        <p><strong>Smart Tip:</strong> ResumeAlign's AI automatically identifies and strategically places relevant keywords from job descriptions into your resume.</p>
+        <p><strong>Smart Tip:</strong> Skillmatchresume's AI automatically identifies and strategically places relevant keywords from job descriptions into your resume.</p>
       </div>
 
       <h2>Strategic Keyword Placement</h2>
@@ -216,7 +216,7 @@ const blogContent: Record<string, any> = {
       </ul>
 
       <h2>Speed Up the Process with AI</h2>
-      <p>Manually tailoring resumes for dozens of applications is exhausting. That's where ResumeAlign comes in.</p>
+      <p>Manually tailoring resumes for dozens of applications is exhausting. That's where Skillmatchresume comes in.</p>
 
       <p class="highlight">Upload your resume, paste the job description, and get a fully customized resume in seconds — not minutes or hours.</p>
 
@@ -293,7 +293,7 @@ const blogContent: Record<string, any> = {
       <p>Thank them and include your full contact information</p>
 
       <div class="callout">
-        <p><strong>Short on time?</strong> ResumeAlign can generate personalized, professional application emails tailored to each job — in seconds.</p>
+        <p><strong>Short on time?</strong> Skillmatchresume can generate personalized, professional application emails tailored to each job — in seconds.</p>
       </div>
 
       <h2>Final Checklist</h2>
@@ -337,7 +337,7 @@ export default function BlogPostPage() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              ResumeAlign
+              Skillmatchresume
             </Link>
             <Link
               href="/app"
@@ -374,20 +374,20 @@ export default function BlogPostPage() {
           {/* CTA Box */}
           <div className="mt-8 md:mt-12 p-6 md:p-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl text-center">
             <h3 className="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4 text-balance">Ready to Put These Tips Into Action?</h3>
-            <p className="text-sm md:text-base text-blue-100 mb-4 md:mb-6 text-pretty">Create your tailored, ATS-optimized resume in seconds with ResumeAlign</p>
+            <p className="text-sm md:text-base text-blue-100 mb-4 md:mb-6 text-pretty">Create your tailored, ATS-optimized resume in seconds with Skillmatchresume</p>
             <Link
               href="/app"
               className="inline-flex items-center justify-center px-6 md:px-8 py-2.5 md:py-3 text-sm md:text-base bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition-all"
             >
               <span className="mr-2">✨</span>
-              Try ResumeAlign Free
+              Try Skillmatchresume Free
             </Link>
           </div>
 
           {/* Author */}
           <div className="mt-8 md:mt-12 pt-6 md:pt-8 border-t border-gray-200">
             <p className="text-sm md:text-base text-gray-600">
-              Written by <span className="font-semibold text-gray-900">Daris Mathew</span> • Creator of ResumeAlign
+              Written by <span className="font-semibold text-gray-900">Daris Mathew</span> • Creator of Skillmatchresume
             </p>
           </div>
         </div>

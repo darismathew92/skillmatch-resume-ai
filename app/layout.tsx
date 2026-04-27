@@ -13,9 +13,9 @@ const _geistMono = V0_Font_Geist_Mono({ subsets: ['latin'], weight: ["100","200"
 const _sourceSerif_4 = V0_Font_Source_Serif_4({ subsets: ['latin'], weight: ["200","300","400","500","600","700","800","900"] })
 
 export const metadata: Metadata = {
-  title: "ResumeAlign - AI-Powered Resume Customization",
+  title: "Skillmatchresume - AI-Powered Resume Customization",
   description: "Tailor your resume for every job application with AI. Created by Daris Mathew",
-  generator: "ResumeAlign",
+  generator: "Skillmatchresume",
 }
 
 export default function RootLayout({

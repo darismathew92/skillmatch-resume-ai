@@ -9,7 +9,7 @@ export default function HomePage() {
       <div className="container mx-auto px-4 py-12 sm:py-16 md:py-24">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent text-balance">
-            ResumeAlign
+            Skillmatchresume
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-6 sm:mb-8 text-pretty max-w-md mx-auto px-2">
             Align your resume for every job application with the power of AI. Get a tailored CV and professional
@@ -84,7 +84,7 @@ export default function HomePage() {
       <div className="container mx-auto px-4 py-12 sm:py-16 my-8 sm:my-16">
         <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-12">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12 text-gray-900">Why Use ResumeAlign?</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12 text-gray-900">Why Use Skillmatchresume?</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
               <div className="flex gap-3 sm:gap-4">
                 <div className="flex-shrink-0">
@@ -144,7 +144,7 @@ export default function HomePage() {
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6 text-gray-900">Get in Touch</h2>
           <p className="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8 px-4">Have questions or feedback? We'd love to hear from you!</p>
           <a
-            href="mailto:darismathew92@gmail.com?subject=ResumeAlign Inquiry"
+            href="mailto:darismathew92@gmail.com?subject=Skillmatchresume Inquiry"
             className="inline-flex items-center justify-center px-6 sm:px-8 py-3.5 sm:py-4 text-base sm:text-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all hover:scale-105 shadow-lg active:scale-100 mx-4"
           >
             <svg

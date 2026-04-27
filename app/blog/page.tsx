@@ -6,7 +6,7 @@ const blogPosts = [
   {
     slug: "launch-announcement",
     title: "I Just Launched a Free AI Tool to Instantly Customize Your Resume",
-    excerpt: "Job hunting is stressful enough — customizing your resume shouldn't make it harder. Learn how ResumeAlign helps you create tailored resumes in seconds.",
+    excerpt: "Job hunting is stressful enough — customizing your resume shouldn't make it harder. Learn how Skillmatchresume helps you create tailored resumes in seconds.",
     date: "2025-01-15",
     readTime: "5 min read",
     category: "Product Launch",
@@ -53,7 +53,7 @@ export default function BlogPage() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              ResumeAlign
+              Skillmatchresume
             </Link>
             <Link
               href="/app"
@@ -116,7 +116,7 @@ export default function BlogPage() {
         <div className="max-w-3xl mx-auto text-center bg-gradient-to-r from-blue-600 to-purple-600 p-8 md:p-12 rounded-2xl shadow-2xl">
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-3 md:mb-4 text-balance">Ready to Apply These Tips?</h2>
           <p className="text-base md:text-lg text-blue-100 mb-6 md:mb-8 text-pretty">
-            Use ResumeAlign to create tailored, ATS-optimized resumes in minutes
+            Use Skillmatchresume to create tailored, ATS-optimized resumes in minutes
           </p>
           <Link
             href="/app"

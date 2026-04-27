@@ -5,7 +5,7 @@ export interface Product {
   priceInCents: number
 }
 
-// Product catalog for the ResumeAlign
+// Product catalog for the Skillmatchresume
 // Using INR (Indian Rupees) for India support with UPI
 export const PRODUCTS: Product[] = [
   {

@@ -689,7 +689,7 @@ export default function ResumeCustomizer() {
 
         <div className="mb-6 sm:mb-8 md:mb-10 text-center px-4">
           <h1 className="mb-3 sm:mb-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent text-balance leading-tight">
-            ResumeAlign
+            Skillmatchresume
           </h1>
           <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-2xl mx-auto text-pretty leading-relaxed">
             Upload your resume and job details to generate a tailored CV and application email powered by AI
