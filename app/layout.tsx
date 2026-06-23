@@ -16,6 +16,9 @@ export const metadata: Metadata = {
   title: "Skillmatchresume - AI-Powered Resume Customization",
   description: "Tailor your resume for every job application with AI. Created by Daris Mathew",
   generator: "Skillmatchresume",
+  other: {
+    "seo-verify": "e00b1d4901c52d7c1e2beda1028ee536",
+  },
 }
 
 export default function RootLayout({
