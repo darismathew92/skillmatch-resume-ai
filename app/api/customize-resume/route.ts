@@ -1,4 +1,7 @@
 import { generateText } from "ai"
+import { groq } from "@ai-sdk/groq"
+
+const AI_MODEL = process.env.GROQ_MODEL || "openai/gpt-oss-20b"
 import { checkRateLimit, getClientIdentifier, incrementUsage, cleanupOldEntries } from "@/lib/rate-limit"
 import { ENABLE_FREE_TIER_LIMITS } from "@/lib/config"
 
@@ -92,15 +95,10 @@ CRITICAL RULES:
 Make this resume stand out as the perfect candidate for this specific role while maintaining authenticity and professionalism.`
 
     const { text } = await generateText({
-      model: "meta/llama-3.1-8b",
+      model: groq(AI_MODEL),
       prompt,
-      maxTokens: 4000,
+      maxOutputTokens: 4000,
       temperature: 0.7,
-      providerOptions: {
-        gateway: {
-          order: ["groq", "fireworks", "together"], // Try Groq first (free), then fallback to paid providers
-        },
-      },
     })
 
     if (ENABLE_FREE_TIER_LIMITS && !hasUnlimitedAccess) {
@@ -110,6 +108,7 @@ Make this resume stand out as the perfect candidate for this specific role while
 
     return Response.json({ customizedResume: text })
   } catch (error: any) {
+    console.error("[ai] generation failed:", error)
     return Response.json(
       {
         error: "AI_ERROR",

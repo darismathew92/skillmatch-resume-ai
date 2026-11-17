@@ -1,4 +1,7 @@
 import { generateText } from "ai"
+import { groq } from "@ai-sdk/groq"
+
+const AI_MODEL = process.env.GROQ_MODEL || "openai/gpt-oss-20b"
 import { checkRateLimit, getClientIdentifier, incrementUsage, cleanupOldEntries } from "@/lib/rate-limit"
 import { ENABLE_FREE_TIER_LIMITS } from "@/lib/config"
 
@@ -482,15 +485,10 @@ ${FIXED_CSS_TEMPLATE}
 OUTPUT ONLY PURE HTML - NO TEXT BEFORE OR AFTER!`
 
       const { text } = await generateText({
-        model: "meta/llama-3.1-8b",
+        model: groq(AI_MODEL),
         prompt,
-        maxTokens: 6000,
+        maxOutputTokens: 6000,
         temperature: 0.3,
-        providerOptions: {
-          gateway: {
-            order: ["groq", "fireworks", "together"], // Try Groq first (free), then fallback to paid providers
-          },
-        },
       })
 
       if (ENABLE_FREE_TIER_LIMITS && !hasUnlimitedAccess) {
@@ -502,7 +500,7 @@ OUTPUT ONLY PURE HTML - NO TEXT BEFORE OR AFTER!`
       console.log("AI PDF resume generation complete")
       return Response.json({ htmlResume: cleanedHtml })
     } catch (aiError: any) {
-      console.log(`AI generation failed, falling back to template`)
+      console.error("[ai] generation failed, falling back to template:", aiError)
 
       if (ENABLE_FREE_TIER_LIMITS && !hasUnlimitedAccess) {
         const identifier = getClientIdentifier(req)
