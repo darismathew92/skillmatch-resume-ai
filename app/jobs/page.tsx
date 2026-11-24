@@ -8,7 +8,6 @@ import {
   isFollowUpDue,
   loadApplications,
   loadProfile,
-  loadSavedCV,
   saveApplications,
   saveProfile,
   snoozeFollowUp,
@@ -17,10 +16,14 @@ import {
   type ApplicationStatus,
   type JobApplication,
 } from "@/lib/applications"
+import { clearCv, loadCv, saveCv } from "@/lib/cv"
+import { hasUnlimitedAccess } from "@/lib/free-tier"
+import { ENABLE_FREE_TIER_LIMITS } from "@/lib/config"
 import { ApiError, designPdf, draftAnswers, extractJob, scoreMatch, tailorResume, writeEmail } from "@/lib/job-client"
 import type { ApplicationProfile } from "@/lib/job-types"
 import { emptyProfile } from "@/lib/job-types"
 import { AddJob, type AnalyseResult } from "./_components/add-job"
+import { CvCard } from "./_components/cv-card"
 import { ApplicationDetail, type PackPart } from "./_components/application-detail"
 import { ApplicationList } from "./_components/application-list"
 import { ProfileCard } from "./_components/profile-card"
@@ -32,6 +35,10 @@ function errorMessage(error: unknown): string {
   return error instanceof ApiError ? error.message : "Something went wrong. Please try again."
 }
 
+function isLimitReached(error: unknown): boolean {
+  return error instanceof ApiError && error.code === "RATE_LIMIT_EXCEEDED"
+}
+
 function csvCell(value: string | number | undefined): string {
   const s = String(value ?? "")
   return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
@@ -41,6 +48,8 @@ export default function JobHubPage() {
   const { toast } = useToast()
   const [mounted, setMounted] = useState(false)
   const [cv, setCv] = useState("")
+  const [cvName, setCvName] = useState("")
+  const [isPro, setIsPro] = useState(false)
   const [apps, setApps] = useState<JobApplication[]>([])
   const [profile, setProfile] = useState<ApplicationProfile>(emptyProfile)
   const [selectedId, setSelectedId] = useState<string | null>(null)
@@ -57,7 +66,10 @@ export default function JobHubPage() {
     const loaded = loadApplications()
     setApps(loaded)
     setProfile(loadProfile())
-    setCv(loadSavedCV())
+    const savedCv = loadCv()
+    setCv(savedCv.text)
+    setCvName(savedCv.name)
+    setIsPro(hasUnlimitedAccess())
     setSelectedId(loaded[0]?.id ?? null)
     setMounted(true)
   }, [])
@@ -83,6 +95,36 @@ export default function JobHubPage() {
     [mutateApps],
   )
 
+  const reportError = useCallback(
+    (title: string, error: unknown) => {
+      toast({ title: isLimitReached(error) ? "Daily free limit reached" : title, description: errorMessage(error), variant: "destructive" })
+      if (isLimitReached(error)) setTimeout(() => (window.location.href = "/unlock"), 1800)
+    },
+    [toast],
+  )
+
+  const updateCv = (next: { text: string; name: string }) => {
+    if (!saveCv(next)) {
+      toast({ title: "Couldn't save your CV", description: "Your browser storage is full or blocked.", variant: "destructive" })
+      return
+    }
+    const replacing = !!cv
+    setCv(next.text)
+    setCvName(next.name)
+    toast({
+      title: replacing ? "CV updated" : "CV ready",
+      description: replacing && apps.some((a) => a.match)
+        ? "Rescore your saved jobs to see matches with the new CV."
+        : "Now add a job link to see how well you match.",
+    })
+  }
+
+  const removeCv = () => {
+    clearCv()
+    setCv("")
+    setCvName("")
+  }
+
   const setBusy = (setter: React.Dispatch<React.SetStateAction<Set<string>>>, id: string, on: boolean) =>
     setter((prev) => {
       const next = new Set(prev)
@@ -104,7 +146,7 @@ export default function JobHubPage() {
       updateApp(id, (a) => ({ ...a, match, updatedAt: new Date().toISOString() }))
       return true
     } catch (error) {
-      toast({ title: "Couldn't score the match", description: errorMessage(error), variant: "destructive" })
+      reportError("Couldn't score the match", error)
       return false
     } finally {
       setBusy(setScoring, id, false)
@@ -178,7 +220,7 @@ export default function JobHubPage() {
       return true
     } catch (error) {
       setPacks((p) => ({ ...p, [app.id]: { ...p[app.id], [part]: "error" } }))
-      toast({ title: `Couldn't create the ${part}`, description: errorMessage(error), variant: "destructive" })
+      reportError(`Couldn't create the ${part}`, error)
       return false
     }
   }
@@ -211,7 +253,7 @@ export default function JobHubPage() {
       const html = await designPdf(app.resume, app.job)
       setPdfHtml((p) => ({ ...p, [app.id]: html }))
     } catch (error) {
-      toast({ title: "Couldn't design the PDF", description: errorMessage(error), variant: "destructive" })
+      reportError("Couldn't design the PDF", error)
     } finally {
       setBusy(setPdfBusy, app.id, false)
     }
@@ -262,14 +304,26 @@ export default function JobHubPage() {
       <Toaster />
       <div className="mx-auto max-w-7xl">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-          <a href="/app" className="inline-flex min-h-[44px] items-center gap-2 text-sm text-gray-600 hover:text-blue-600">
-            <span className="text-xl">←</span> Resume tailor
+          <a href="/" className="inline-flex min-h-[44px] items-center gap-2 text-sm text-gray-600 hover:text-blue-600">
+            <span className="text-xl">←</span> Home
           </a>
-          {apps.length > 0 && (
-            <button onClick={exportCsv} className="rounded-md border border-gray-200 bg-white px-3 py-2 text-xs font-medium text-gray-700 hover:border-blue-300">
-              Export CSV
-            </button>
-          )}
+          <div className="flex items-center gap-2">
+            {mounted && isPro && (
+              <span className="rounded-full bg-gradient-to-r from-yellow-400 to-orange-400 px-3 py-1.5 text-xs font-semibold text-white">
+                ⭐ Unlimited access
+              </span>
+            )}
+            {mounted && !isPro && ENABLE_FREE_TIER_LIMITS && (
+              <a href="/unlock" className="rounded-md bg-gradient-to-r from-blue-600 to-purple-600 px-3 py-2 text-xs font-semibold text-white">
+                Upgrade
+              </a>
+            )}
+            {apps.length > 0 && (
+              <button onClick={exportCsv} className="rounded-md border border-gray-200 bg-white px-3 py-2 text-xs font-medium text-gray-700 hover:border-blue-300">
+                Export CSV
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="mb-6 text-center">
@@ -277,7 +331,8 @@ export default function JobHubPage() {
             Job Hub
           </h1>
           <p className="mx-auto mt-2 max-w-2xl text-sm text-gray-600 sm:text-base">
-            Paste a job link. AI reads it, scores your fit, prepares your resume, email and answers, and tracks every application.
+            Upload your CV once, paste a job link, and AI scores your fit, writes your tailored resume, email and form answers,
+            and tracks every application. All in one place.
           </p>
         </div>
 
@@ -301,27 +356,10 @@ export default function JobHubPage() {
           </div>
         )}
 
-        {mounted && !cv && (
-          <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-            <span className="font-semibold">Upload your CV first.</span> The Job Hub uses the CV you saved in the resume tailor.{" "}
-            <a href="/app" className="font-semibold text-blue-700 underline">
-              Upload it here
-            </a>
-            , then come back.
-          </div>
-        )}
-
         <div className="grid gap-6 lg:grid-cols-[380px_1fr]">
           <div className="space-y-4">
+            {mounted && <CvCard cv={{ text: cv, name: cvName }} onChange={updateCv} onClear={removeCv} />}
             <AddJob disabled={!cv} busy={analysing} steps={steps} onAnalyse={analyse} />
-            {mounted && cv && (
-              <p className="px-1 text-xs text-gray-500">
-                Using your saved CV ({cv.length.toLocaleString()} characters) ·{" "}
-                <a href="/app" className="text-blue-600 hover:underline">
-                  change
-                </a>
-              </p>
-            )}
             <ProfileCard
               profile={profile}
               onSave={(p) => {

@@ -431,8 +431,18 @@ function AnswersPanel({ app, busy, profileFilled, onRegenerate, onUpdate }: Prop
     onRegenerate("answers", { questions })
   }
 
+  const fromPosting = app.job.applicationQuestions.length
+
   return (
     <div className="space-y-4">
+      <p className="rounded-md bg-gray-50 p-2.5 text-xs text-gray-600">
+        <span className="font-semibold text-gray-800">Where these come from: </span>
+        {fromPosting
+          ? `${fromPosting} question${fromPosting === 1 ? "" : "s"} the job posting asks, plus `
+          : "The posting didn't ask any questions, so these are "}
+        the questions most application forms ask. Add any question from the real form below. AI writes each answer from
+        your CV and application profile, and never invents facts.
+      </p>
       {!profileFilled && (
         <p className="rounded-md bg-amber-50 p-2.5 text-xs text-amber-800">
           Fill in your application profile (left side) so answers about notice period, salary and work authorisation use your real details instead of placeholders.

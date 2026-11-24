@@ -88,8 +88,47 @@ async function readCapped(response: Response): Promise<string> {
 }
 
 // Follows redirects manually so every hop is checked against the rules above.
+// ---------- LinkedIn ----------
+// Normal LinkedIn job pages need a sign-in and often serve a different page
+// (a login wall or other jobs). LinkedIn's public guest endpoint returns just
+// the one posting, so we always read that, using the job ID from the link.
+
+export function linkedInJobId(raw: string): string | null {
+  let url: URL
+  try {
+    url = new URL(raw.trim())
+  } catch {
+    return null
+  }
+  if (!/(^|\.)linkedin\.com$/i.test(url.hostname)) return null
+  const fromPath = url.pathname.match(/\/jobs\/view\/(?:[^/]*?-)?(\d{6,})/)
+  if (fromPath) return fromPath[1]
+  const fromQuery = url.searchParams.get("currentJobId")
+  return fromQuery && /^\d{6,}$/.test(fromQuery) ? fromQuery : null
+}
+
+function isLinkedIn(raw: string): boolean {
+  try {
+    return /(^|\.)linkedin\.com$/i.test(new URL(raw.trim()).hostname)
+  } catch {
+    return false
+  }
+}
+
 export async function fetchJobPage(rawUrl: string): Promise<{ html: string; finalUrl: string }> {
-  let url = await assertPublicUrl(rawUrl.trim())
+  const linkedInId = linkedInJobId(rawUrl)
+  if (isLinkedIn(rawUrl) && !linkedInId) {
+    throw new JobPageError(
+      "That LinkedIn link isn't a single job. Open the job itself and copy its link (it contains /jobs/view/), or paste the description instead.",
+      "NEEDS_PASTE",
+    )
+  }
+
+  let url = await assertPublicUrl(
+    linkedInId ? `https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/${linkedInId}` : rawUrl.trim(),
+  )
+  // For LinkedIn, the Apply button should point at the normal job page
+  const displayUrl = linkedInId ? `https://www.linkedin.com/jobs/view/${linkedInId}/` : null
 
   for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
     let response: Response
@@ -109,6 +148,10 @@ export async function fetchJobPage(rawUrl: string): Promise<{ html: string; fina
     }
 
     if (response.status >= 300 && response.status < 400) {
+      // A redirect from LinkedIn means a login wall or a different page, never the job
+      if (linkedInId) {
+        throw new JobPageError("LinkedIn wouldn't show this job without a sign-in. Paste the job description instead.", "NEEDS_PASTE")
+      }
       const location = response.headers.get("location")
       if (!location) break
       url = await assertPublicUrl(new URL(location, url).toString())
@@ -127,7 +170,7 @@ export async function fetchJobPage(rawUrl: string): Promise<{ html: string; fina
       throw new JobPageError("That link isn't a web page. Paste the job description instead.", "NEEDS_PASTE")
     }
 
-    return { html: await readCapped(response), finalUrl: url.toString() }
+    return { html: await readCapped(response), finalUrl: displayUrl ?? url.toString() }
   }
 
   throw new JobPageError("Too many redirects. Paste the job description instead.", "NEEDS_PASTE")
@@ -257,7 +300,40 @@ export function extractJobLd(html: string): JobLdData | null {
 }
 
 // Builds the text the AI reads: structured data first (most reliable), then page text.
+// LinkedIn's guest job posting markup
+export function extractLinkedInGuest(html: string): string | null {
+  const pick = (re: RegExp) => {
+    const m = html.match(re)
+    return m ? htmlToText(m[1]).replace(/\s+/g, " ").trim() : ""
+  }
+  const title = pick(/class="[^"]*top-card-layout__title[^"]*"[^>]*>([\s\S]*?)<\/h\d>/i)
+  const descriptionHtml = html.match(/class="[^"]*show-more-less-html__markup[^"]*"[^>]*>([\s\S]*?)<\/div>/i)?.[1]
+  if (!title || !descriptionHtml) return null
+
+  const company = pick(/class="[^"]*topcard__org-name-link[^"]*"[^>]*>([\s\S]*?)<\/a>/i)
+  const location = pick(/class="[^"]*topcard__flavor--bullet[^"]*"[^>]*>([\s\S]*?)<\/span>/i)
+  const criteria = Array.from(
+    html.matchAll(
+      /description__job-criteria-subheader[^>]*>([\s\S]*?)<\/h3>[\s\S]*?description__job-criteria-text[^>]*>([\s\S]*?)<\/span>/gi,
+    ),
+  ).map((m) => `${htmlToText(m[1]).trim()}: ${htmlToText(m[2]).trim()}`)
+
+  return [
+    "STRUCTURED JOB DATA (LinkedIn job posting):",
+    `Title: ${title}`,
+    company && `Company: ${company}`,
+    location && `Location: ${location}`,
+    ...criteria,
+    `\nDESCRIPTION:\n${htmlToText(descriptionHtml)}`,
+  ]
+    .filter(Boolean)
+    .join("\n")
+}
+
 export function buildJobSourceText(html: string): { text: string; ld: JobLdData | null } {
+  const linkedIn = extractLinkedInGuest(html)
+  if (linkedIn) return { text: linkedIn.slice(0, MAX_TEXT), ld: null }
+
   const ld = extractJobLd(html)
   const titleTag = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]
 
