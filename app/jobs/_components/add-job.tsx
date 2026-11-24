@@ -45,7 +45,10 @@ export function AddJob({ disabled, busy, steps, onAnalyse }: Props) {
   return (
     <Card className="border-2 border-blue-100 shadow-sm">
       <CardHeader className="pb-3">
-        <CardTitle className="text-lg">Add a job</CardTitle>
+        <CardTitle className="text-lg">
+          <span className="mr-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 align-middle text-[11px] text-white">2</span>
+          Add a job
+        </CardTitle>
         <CardDescription>Paste a job link. AI reads it and scores how well you fit.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -108,7 +111,7 @@ export function AddJob({ disabled, busy, steps, onAnalyse }: Props) {
           {busy ? "Working…" : "Analyse job"}
         </Button>
 
-        {disabled && <p className="text-xs text-amber-700">Upload your CV first so we can score your match.</p>}
+        {disabled && <p className="text-xs text-amber-700">Add your CV above first so we can score your match.</p>}
         {message && <p className="rounded-md bg-amber-50 p-2.5 text-sm text-amber-800">{message}</p>}
         {steps && <Steps steps={steps} />}
       </CardContent>

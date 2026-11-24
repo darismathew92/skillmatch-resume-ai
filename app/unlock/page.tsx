@@ -41,7 +41,7 @@ export default function UnlockPage() {
         analytics.trackAccessRestored()
 
         setRestoreMessage("Access restored! Redirecting...")
-        setTimeout(() => router.push("/app"), 1500)
+        setTimeout(() => router.push("/jobs"), 1500)
       } else {
         setRestoreMessage(result.message || "No payment found for this email")
       }

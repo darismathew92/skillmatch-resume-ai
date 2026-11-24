@@ -122,7 +122,7 @@ export default function Checkout({ productId, onSuccess }: { productId: string; 
             We've saved your access to: <strong>{email}</strong>
           </p>
           <button
-            onClick={() => (window.location.href = "/app")}
+            onClick={() => (window.location.href = "/jobs")}
             className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
           >
             Start Using the App
