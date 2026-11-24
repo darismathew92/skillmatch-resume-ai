@@ -4,6 +4,7 @@ import { groq } from "@ai-sdk/groq"
 const AI_MODEL = process.env.GROQ_MODEL || "openai/gpt-oss-20b"
 import { checkRateLimit, getClientIdentifier, incrementUsage, cleanupOldEntries } from "@/lib/rate-limit"
 import { ENABLE_FREE_TIER_LIMITS } from "@/lib/config"
+import { hasPaidAccess } from "@/lib/access-token"
 
 export const maxDuration = 30
 
@@ -13,12 +14,14 @@ const MAX_JOB_DESC_SIZE = 10000
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { cvData, jobDetails, customInstructions, hasUnlimitedAccess } = body
+    const { cvData, jobDetails, customInstructions } = body
+    // Paid access comes from a server-signed token, never from a flag the browser sends
+    const hasUnlimitedAccess = hasPaidAccess(req)
 
     if (ENABLE_FREE_TIER_LIMITS && !hasUnlimitedAccess) {
       cleanupOldEntries()
       const identifier = getClientIdentifier(req)
-      const rateCheck = checkRateLimit(identifier)
+      const rateCheck = await checkRateLimit(identifier)
 
       if (!rateCheck.allowed) {
         return Response.json(
@@ -93,7 +96,7 @@ Make it compelling, authentic, and tailored to this specific opportunity.`
 
     if (ENABLE_FREE_TIER_LIMITS && !hasUnlimitedAccess) {
       const identifier = getClientIdentifier(req)
-      incrementUsage(identifier)
+      await incrementUsage(identifier)
     }
 
     return Response.json({ email: text })

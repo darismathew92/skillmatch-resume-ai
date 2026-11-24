@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
 import { Toaster } from "@/components/ui/toaster"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { hasUnlimitedAccess } from "@/lib/free-tier"
+import { hasUnlimitedAccess, accessHeaders } from "@/lib/free-tier"
 import { getStoredFingerprint } from "@/lib/fingerprint"
 import { analytics } from "@/lib/analytics"
 import { ENABLE_FREE_TIER_LIMITS } from "@/lib/config"
@@ -76,10 +76,9 @@ export default function ResumeCustomizer() {
         headers: {
           "Content-Type": "application/json",
           "x-fingerprint": fingerprint,
+          ...accessHeaders(),
         },
-        body: JSON.stringify({
-          hasUnlimitedAccess: false,
-        }),
+        body: JSON.stringify({}),
       })
 
       const data = await response.json()
@@ -208,12 +207,12 @@ export default function ResumeCustomizer() {
         headers: {
           "Content-Type": "application/json",
           "x-fingerprint": fingerprint,
+          ...accessHeaders(),
         },
         body: JSON.stringify({
           cvData: uploadedCV,
           jobDetails,
           customInstructions: customInstructions.trim(),
-          hasUnlimitedAccess: isPro,
         }),
       })
 
@@ -321,12 +320,12 @@ export default function ResumeCustomizer() {
         headers: {
           "Content-Type": "application/json",
           "x-fingerprint": fingerprint,
+          ...accessHeaders(),
         },
         body: JSON.stringify({
           cvData: uploadedCV,
           jobDetails,
           customInstructions: customInstructions.trim(),
-          hasUnlimitedAccess: isPro,
         }),
       })
 
@@ -520,12 +519,12 @@ export default function ResumeCustomizer() {
         headers: {
           "Content-Type": "application/json",
           "x-fingerprint": fingerprint,
+          ...accessHeaders(),
         },
         body: JSON.stringify({
           customizedResume: customizedResume,
           jobDetails,
           customInstructions: customInstructions.trim(),
-          hasUnlimitedAccess: isPro,
         }),
       })
 
@@ -666,6 +665,12 @@ export default function ResumeCustomizer() {
           </a>
 
           <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full sm:w-auto">
+            <a
+              href="/jobs"
+              className="px-3 sm:px-4 py-2 sm:py-2.5 bg-white text-blue-700 border-2 border-blue-200 hover:border-blue-400 rounded-lg text-xs sm:text-sm font-semibold min-h-[44px] flex items-center transition-colors"
+            >
+              🚀 Job Hub: apply with AI
+            </a>
             {ENABLE_FREE_TIER_LIMITS && !isPro && (
               <div className="px-3 sm:px-4 py-2 sm:py-2.5 bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 border border-blue-200 rounded-lg text-xs sm:text-sm font-medium min-h-[44px] flex items-center">
                 {remainingFree} free left today

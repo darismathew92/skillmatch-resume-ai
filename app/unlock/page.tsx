@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { analytics } from "@/lib/analytics"
+import { saveAccessToken } from "@/lib/free-tier"
 
 export default function UnlockPage() {
   const router = useRouter()
@@ -34,9 +35,8 @@ export default function UnlockPage() {
 
       const result = await response.json()
 
-      if (result.success) {
-        localStorage.setItem("hasUnlimitedAccess", "true")
-        localStorage.setItem("purchaseEmail", restoreEmail)
+      if (result.success && result.accessToken) {
+        saveAccessToken(result.accessToken, restoreEmail)
 
         analytics.trackAccessRestored()
 

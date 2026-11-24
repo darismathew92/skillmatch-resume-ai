@@ -1,5 +1,6 @@
 "use server"
 
+import type Stripe from "stripe"
 import { stripe } from "@/lib/stripe"
 import { PRODUCTS } from "@/lib/products"
 
@@ -37,36 +38,54 @@ export async function startCheckoutSession(productId: string, email?: string) {
   return session.client_secret
 }
 
-export async function verifyPaymentByEmail(email: string) {
+function isPaidUnlimitedSession(session: Stripe.Checkout.Session): boolean {
+  return session.payment_status === "paid" && session.metadata?.purchaseType === "unlimited-access"
+}
+
+function sessionEmail(session: Stripe.Checkout.Session): string {
+  return session.customer_details?.email || session.customer_email || ""
+}
+
+// Confirms one specific checkout with Stripe (used right after payment).
+export async function verifyCheckoutSession(
+  sessionId: string,
+): Promise<{ success: boolean; email?: string; sessionId?: string; message: string }> {
+  if (!sessionId || !sessionId.startsWith("cs_")) {
+    return { success: false, message: "Invalid checkout session" }
+  }
+
   try {
-    // Search for customers with this email
-    const customers = await stripe.customers.list({
-      email: email,
-      limit: 1,
-    })
-
-    if (customers.data.length === 0) {
-      return { success: false, message: "No payment found for this email" }
+    const session = await stripe.checkout.sessions.retrieve(sessionId)
+    if (!isPaidUnlimitedSession(session)) {
+      return { success: false, message: "Payment not completed" }
     }
+    return { success: true, email: sessionEmail(session), sessionId: session.id, message: "Payment verified" }
+  } catch (error) {
+    console.error("Error verifying checkout session:", error)
+    return { success: false, message: "Error verifying payment" }
+  }
+}
 
-    const customer = customers.data[0]
+// Finds a past paid checkout by email (used to restore access on a new device).
+export async function verifyPaymentByEmail(
+  email: string,
+): Promise<{ success: boolean; email?: string; sessionId?: string; message: string }> {
+  try {
+    const normalized = email.trim()
 
-    // Check for successful payment intents
-    const paymentIntents = await stripe.paymentIntents.list({
-      customer: customer.id,
+    // Paid checkouts by this email. Covers guest checkouts, which never
+    // create a Stripe customer, so a customer lookup alone would miss them.
+    const sessions = await stripe.checkout.sessions.list({
+      customer_details: { email: normalized },
       limit: 100,
     })
 
-    // Check if any payment was successful and has the unlimited-access metadata
-    const hasValidPayment = paymentIntents.data.some(
-      (pi) => pi.status === "succeeded" && pi.metadata.purchaseType === "unlimited-access",
-    )
-
-    if (hasValidPayment) {
-      return { success: true, message: "Payment verified successfully" }
+    const paid = sessions.data.find(isPaidUnlimitedSession)
+    if (paid) {
+      return { success: true, email: normalized, sessionId: paid.id, message: "Payment verified successfully" }
     }
 
-    return { success: false, message: "No valid payment found" }
+    return { success: false, message: "No payment found for this email" }
   } catch (error) {
     console.error("Error verifying payment:", error)
     return { success: false, message: "Error verifying payment" }
