@@ -11,9 +11,9 @@ export default function HomePage() {
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent text-balance">
             Skillmatchresume
           </h1>
-          <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-6 sm:mb-8 text-pretty max-w-md mx-auto px-2">
-            Align your resume for every job application with the power of AI. Get a tailored CV and professional
-            application email in minutes.
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-6 sm:mb-8 text-pretty max-w-xl mx-auto px-2">
+            Paste a job link and AI scores your fit, tailors your CV, writes your application email and form
+            answers, and tracks every application.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center px-4 sm:px-0">
             <a
@@ -22,6 +22,13 @@ export default function HomePage() {
             >
               <span className="mr-2 text-xl">✨</span>
               Get Started Free
+            </a>
+            <a
+              href="/jobs"
+              className="inline-flex items-center justify-center px-6 sm:px-8 py-3.5 sm:py-4 text-base sm:text-lg bg-white text-blue-700 font-semibold rounded-lg border-2 border-blue-200 hover:border-blue-400 transition-all hover:scale-105 shadow-lg active:scale-100"
+            >
+              <span className="mr-2 text-xl">🚀</span>
+              Job Hub
             </a>
             <a
               href="https://buymeacoffee.com/darismathew"

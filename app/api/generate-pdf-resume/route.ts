@@ -4,6 +4,7 @@ import { groq } from "@ai-sdk/groq"
 const AI_MODEL = process.env.GROQ_MODEL || "openai/gpt-oss-20b"
 import { checkRateLimit, getClientIdentifier, incrementUsage, cleanupOldEntries } from "@/lib/rate-limit"
 import { ENABLE_FREE_TIER_LIMITS } from "@/lib/config"
+import { hasPaidAccess } from "@/lib/access-token"
 
 export const maxDuration = 30
 
@@ -357,12 +358,14 @@ function escapeHtml(text: string): string {
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { customizedResume, jobDetails, customInstructions, hasUnlimitedAccess } = body
+    const { customizedResume, jobDetails, customInstructions } = body
+    // Paid access comes from a server-signed token, never from a flag the browser sends
+    const hasUnlimitedAccess = hasPaidAccess(req)
 
     if (ENABLE_FREE_TIER_LIMITS && !hasUnlimitedAccess) {
       cleanupOldEntries()
       const identifier = getClientIdentifier(req)
-      const rateCheck = checkRateLimit(identifier)
+      const rateCheck = await checkRateLimit(identifier)
 
       if (!rateCheck.allowed) {
         return Response.json(
@@ -493,7 +496,7 @@ OUTPUT ONLY PURE HTML - NO TEXT BEFORE OR AFTER!`
 
       if (ENABLE_FREE_TIER_LIMITS && !hasUnlimitedAccess) {
         const identifier = getClientIdentifier(req)
-        incrementUsage(identifier)
+        await incrementUsage(identifier)
       }
 
       const cleanedHtml = cleanHtmlOutput(text)
@@ -504,7 +507,7 @@ OUTPUT ONLY PURE HTML - NO TEXT BEFORE OR AFTER!`
 
       if (ENABLE_FREE_TIER_LIMITS && !hasUnlimitedAccess) {
         const identifier = getClientIdentifier(req)
-        incrementUsage(identifier)
+        await incrementUsage(identifier)
       }
 
       const html = generateHtmlWithTemplate(resumeText, jobDetails)

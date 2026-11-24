@@ -101,6 +101,12 @@ importers:
       '@stripe/stripe-js':
         specifier: latest
         version: 8.3.0
+      '@upstash/ratelimit':
+        specifier: ^2.2.1
+        version: 2.2.1(@upstash/redis@1.41.0)
+      '@upstash/redis':
+        specifier: ^1.41.0
+        version: 1.41.0
       '@vercel/analytics':
         specifier: latest
         version: 1.5.0(next@16.2.4(@opentelemetry/api@1.9.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
@@ -1512,6 +1518,18 @@ packages:
   '@types/trusted-types@2.0.7':
     resolution: {integrity: sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw==}
 
+  '@upstash/core-analytics@0.0.10':
+    resolution: {integrity: sha512-7qJHGxpQgQr9/vmeS1PktEwvNAF7TI4iJDi8Pu2CFZ9YUGHZH4fOP5TfYlZ4aVxfopnELiE4BS4FBjyK7V1/xQ==}
+    engines: {node: '>=16.0.0'}
+
+  '@upstash/ratelimit@2.2.1':
+    resolution: {integrity: sha512-SE2BU4h4+Ua/5SLKkrXZ8j1hYZt8xge3dGD3mnMeDls1CiOpau8Q8gipdVtbbzjIxBxRutJqCBoeXqSa1HH3lg==}
+    peerDependencies:
+      '@upstash/redis': ^1.38.2
+
+  '@upstash/redis@1.41.0':
+    resolution: {integrity: sha512-TIu9C1B0ToXQLXt2M1LQuGZ6nkMjOZPIdJyU0GGWKZToa/MvJF8x2IRDOPMIAw2BLGXGhi1aZr5AnhlXu4YLXg==}
+
   '@vercel/analytics@1.5.0':
     resolution: {integrity: sha512-MYsBzfPki4gthY5HnYN7jgInhAZ7Ac1cYDoRWFomwGHWEX7odTEzbtg9kf/QSo7XEsEAqlQugA6gJ2WS2DEa3g==}
     peerDependencies:
@@ -2231,6 +2249,9 @@ packages:
     resolution: {integrity: sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==}
     engines: {node: '>=14.17'}
     hasBin: true
+
+  uncrypto@0.1.3:
+    resolution: {integrity: sha512-Ql87qFHB3s/De2ClA9e0gsnS6zXG27SkTiSJwjCc9MebbfapQfuPzumMIUMi38ezPZVNFcHI9sUIepeQfw8J8Q==}
 
   undici-types@6.11.1:
     resolution: {integrity: sha512-mIDEX2ek50x0OlRgxryxsenE5XaQD4on5U2inY7RApK3SOJpofyw7uW2AyfMKkhAxXIceo2DeWGVGwyvng1GNQ==}
@@ -3504,6 +3525,19 @@ snapshots:
   '@types/trusted-types@2.0.7':
     optional: true
 
+  '@upstash/core-analytics@0.0.10':
+    dependencies:
+      '@upstash/redis': 1.41.0
+
+  '@upstash/ratelimit@2.2.1(@upstash/redis@1.41.0)':
+    dependencies:
+      '@upstash/core-analytics': 0.0.10
+      '@upstash/redis': 1.41.0
+
+  '@upstash/redis@1.41.0':
+    dependencies:
+      uncrypto: 0.1.3
+
   '@vercel/analytics@1.5.0(next@16.2.4(@opentelemetry/api@1.9.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)':
     optionalDependencies:
       next: 16.2.4(@opentelemetry/api@1.9.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -4200,6 +4234,8 @@ snapshots:
   tw-animate-css@1.3.3: {}
 
   typescript@6.0.3: {}
+
+  uncrypto@0.1.3: {}
 
   undici-types@6.11.1: {}
 

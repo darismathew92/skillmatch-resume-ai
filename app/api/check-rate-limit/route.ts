@@ -1,12 +1,10 @@
 import { checkRateLimit, getClientIdentifier, cleanupOldEntries } from "@/lib/rate-limit"
+import { hasPaidAccess } from "@/lib/access-token"
 
 export async function POST(req: Request) {
   try {
-    // Check if user has unlimited access
-    const body = await req.json()
-    const { hasUnlimitedAccess } = body
-
-    if (hasUnlimitedAccess) {
+    // Paid access is checked from the server-signed token, not the request body
+    if (hasPaidAccess(req)) {
       return Response.json({
         allowed: true,
         remaining: 999,
@@ -14,14 +12,14 @@ export async function POST(req: Request) {
       })
     }
 
-    // Cleanup old entries
+    // Cleanup old entries (in-memory fallback only)
     cleanupOldEntries()
 
     // Get client identifier
     const identifier = getClientIdentifier(req)
 
     // Check rate limit
-    const result = checkRateLimit(identifier)
+    const result = await checkRateLimit(identifier)
 
     return Response.json({
       allowed: result.allowed,

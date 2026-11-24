@@ -46,9 +46,29 @@ export function hasFreeGenerationsLeft(): boolean {
   return getRemainingFreeGenerations() > 0
 }
 
+// Paid access is a token signed by the server after it verified the payment
+// with Stripe. The API checks the signature, so editing localStorage can't fake it.
+const ACCESS_TOKEN_KEY = "accessToken"
+
+export function getAccessToken(): string | null {
+  if (typeof window === "undefined") return null
+  return localStorage.getItem(ACCESS_TOKEN_KEY)
+}
+
+export function saveAccessToken(token: string, email?: string): void {
+  localStorage.setItem(ACCESS_TOKEN_KEY, token)
+  localStorage.setItem("hasUnlimitedAccess", "true") // kept for display only
+  if (email) localStorage.setItem("purchaseEmail", email)
+}
+
+// Headers to send with API calls so the server can verify paid access.
+export function accessHeaders(): Record<string, string> {
+  const token = getAccessToken()
+  return token ? { "x-access-token": token } : {}
+}
+
 export function hasUnlimitedAccess(): boolean {
-  if (typeof window === "undefined") return false
-  return localStorage.getItem("hasUnlimitedAccess") === "true"
+  return getAccessToken() !== null
 }
 
 export function canGenerate(): { allowed: boolean; reason?: string } {
